@@ -30,7 +30,7 @@ navItems.forEach((item, i) => {
   item.onclick = () => handleNavClick(i);
 });
 
-// Drag logic with left and top limits
+// Drag logic with constraints
 mover.onmousedown = (e) => {
   isDragging = true;
   lastX = e.clientX;
@@ -47,18 +47,15 @@ document.onmousemove = (e) => {
   let elementX = parseInt(style.left, 10) || 0;
   let elementY = parseInt(style.top, 10) || 0;
 
-  let newLeft = elementX + deltaX;
-  let newTop = elementY + deltaY;
+  let newX = elementX + deltaX;
+  let newY = elementY + deltaY;
 
-  // Limit left movement between 40px and 700px
-  if (newLeft < 40) newLeft = 40;
-  if (newLeft > 900) newLeft = 900;
+  // Apply constraints
+  newX = Math.max(40, Math.min(900, newX));
+  newY = Math.max(40, newY);
 
-  // Limit top movement to minimum 40px
-  if (newTop < 40) newTop = 40;
-
-  navbar.style.left = `${newLeft}px`;
-  navbar.style.top = `${newTop}px`;
+  navbar.style.left = `${newX}px`;
+  navbar.style.top = `${newY}px`;
 
   lastX = e.clientX;
   lastY = e.clientY;
@@ -73,6 +70,7 @@ document.onmouseup = () => {
 closeBtn.onclick = () => {
   container.style.width = "150px";
   cursor.style.transform = "scale(0)";
+  navItems.forEach(item => item.style.transform = "scale(0)");
   navItems.forEach(item => item.style.display = "none");
   closeBtn.style.display = "none";
   menuBtn.style.display = "block";
@@ -82,6 +80,7 @@ menuBtn.onclick = () => {
   container.style.width = "510px";
   cursor.style.transform = "scale(1)";
   navItems.forEach(item => item.style.display = "block");
+  navItems.forEach(item => item.style.transform = "scale(1)");
   closeBtn.style.display = "block";
   menuBtn.style.display = "none";
 };
